@@ -93,7 +93,7 @@ func PaladinControlZoth() *Player {
 			SludgeBelcher(),
 			EmperorThaurissan(),
 			SylvanasWindrunner(),
-			// RagnarosTheFirelord(),
+			RagnarosTheFirelord(),
 			NZothTheCorruptor(),
 		},
 	)

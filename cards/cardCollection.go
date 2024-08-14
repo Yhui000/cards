@@ -3,6 +3,8 @@ package cards
 import (
 	"cards/utils"
 
+	"math/rand"
+
 	"github.com/google/uuid"
 )
 
@@ -14,9 +16,9 @@ import (
 func TheCoin() *Card {
 	return &Card{
 		Mana:   0,
-		Name:   "The Coin",
+		Name:   "硬币",
 		Rarity: Basic,
-		Text:   "Gain one Mana Crystal this turn only.",
+		Text:   "在本回合中，获得一个法力水晶。",
 		Image:  "/imgs/TheCoin.png",
 		Tags:   []string{Spell, Neutral},
 		Events: map[string]Event{
@@ -28,11 +30,11 @@ func TheCoin() *Card {
 func ElvenArcher() *Card {
 	return &Card{
 		Mana:      1,
-		Name:      "Elven Archer",
+		Name:      "精灵弓箭手",
 		Attack:    1,
 		MaxHealth: 1,
 		Rarity:    Basic,
-		Text:      "<b>Battlecry:</b> Deal 1 damage.",
+		Text:      "<b>战吼：</b>造成1点伤害。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/2/2f/Elven_Archer_full.jpg",
 		Tags:      []string{Minion, Neutral},
 		Events: map[string]Event{
@@ -51,9 +53,9 @@ func ElvenArcher() *Card {
 func RockBottom() *Card {
 	return &Card{
 		Mana:   1,
-		Name:   "Rock Bottom",
+		Name:   "岩石海底",
 		Rarity: Rare,
-		Text:   "Summon a 1/1 Murloc, then <b>Dredge</b>. If it's also a Murloc, summon one more.",
+		Text:   "召唤一个1/1的鱼人，然后<b>探底</b>。如果选中的是鱼人牌，则再召唤一个。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/7/74/Rock_Bottom_full.jpg",
 		Tags:   []string{Spell, Warlock},
 		Events: map[string]Event{
@@ -79,11 +81,11 @@ func RockBottom() *Card {
 func AzsharanScavenger() *Card {
 	return &Card{
 		Mana:      2,
-		Name:      "Azsharan Scavenger",
+		Name:      "艾萨拉的拾荒者",
 		Attack:    2,
 		MaxHealth: 3,
 		Rarity:    Common,
-		Text:      "<b>Battlecry:</b> Put a 'Sunken Scavenger' on the bottom of your deck.",
+		Text:      "<b>战吼：</b> 将一张沉没的拾荒者置于你的牌库底。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/f/f8/Azsharan_Scavenger_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Warlock},
@@ -103,9 +105,9 @@ func AzsharanScavenger() *Card {
 func ChumBucket() *Card {
 	return &Card{
 		Mana:   2,
-		Name:   "Chum Bucket",
+		Name:   "鱼饵桶",
 		Rarity: Epic,
-		Text:   "Give all Murlocs in your hand +1/+1. Repeat for each Murloc you control.",
+		Text:   "使你手牌中的所有鱼人牌获得+1/+1。你每控制一个鱼人，重复一次。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/6/61/Chum_Bucket_full.jpg",
 		Tags:   []string{Spell, Warlock},
 		Events: map[string]Event{
@@ -144,11 +146,11 @@ func ChumBucket() *Card {
 func Voidgill() *Card {
 	return &Card{
 		Mana:      2,
-		Name:      "Voidgill",
+		Name:      "虚鳃鱼人",
 		Attack:    3,
 		MaxHealth: 2,
 		Rarity:    Rare,
-		Text:      "<b>Deathrattle:</b> Give all Murlocs in your hand +1/+1.",
+		Text:      "<b>亡语：</b> 使你手牌中的所有鱼人牌获得+1/+1",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/e/e3/Voidgill_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Warlock, Deathrattle},
@@ -172,11 +174,11 @@ func Voidgill() *Card {
 func BloodscentVilefin() *Card {
 	return &Card{
 		Mana:      3,
-		Name:      "Bloodscent Vilefin",
+		Name:      "血腥恶鳍鱼人",
 		Attack:    3,
 		MaxHealth: 4,
 		Rarity:    Rare,
-		Text:      "<b>Battlecry: Dredge.</b> If it's a Murloc, change its Cost to Health instead of Mana.",
+		Text:      "<b>战吼：探底。</b>如果选中的是鱼人牌，则使其改为消耗生命值，而非法力值。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/9/9a/Bloodscent_Vilefin_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Warlock},
@@ -198,18 +200,18 @@ func BloodscentVilefin() *Card {
 func SeadevilStinger() *Card {
 	return &Card{
 		Mana:      4,
-		Name:      "Seadevil Stinger",
+		Name:      "海魔钉刺者",
 		Attack:    4,
 		MaxHealth: 2,
 		Rarity:    Rare,
-		Text:      "<b>Battlecry:</b> The next Murloc you play this turn costs Health instead of Mana.",
+		Text:      "<b>战吼：</b>在本回合中，你使用的下一张鱼人牌不再消耗法力值，转而消耗生命值。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/e/e8/Seadevil_Stinger_full.jpg",
 		Tribe:     Murloc,
-		Tags:      []string{Minion, Warlock},
+		Tags:      []string{Minion, Warlock, Battlecry},
 		Events: map[string]Event{
 			EventBattlecry: func(ctx *EventContext) error {
 				h, b := ctx.This.Player.Hero, ctx.Board
-				enchid := uuid.NewString()
+
 				blpmid := uuid.NewString()
 				for _, c := range h.Player.Hand {
 					b.EnchantCard(c, &Enchantment{
@@ -217,6 +219,7 @@ func SeadevilStinger() *Card {
 						Tags: []string{BloodPayment},
 					})
 				}
+				enchid := uuid.NewString()
 				b.EnchantCard(h, &Enchantment{
 					Id: enchid,
 					Events: map[string]Event{
@@ -262,11 +265,11 @@ func SeadevilStinger() *Card {
 func Gigafin() *Card {
 	return &Card{
 		Mana:      8,
-		Name:      "Gigafin",
+		Name:      "老巨鳍",
 		Attack:    7,
 		MaxHealth: 4,
 		Rarity:    Legendary,
-		Text:      "<b>Colossal +1. Battlecry:</b> Devour all enemy minions. <b>Deathrattle:</b> Spit them back out.",
+		Text:      "<b>巨型+1</br>战吼：</b>吞食所有敌方随从。亡语：吐出来。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/2/26/Gigafin_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Warlock, Deathrattle},
@@ -300,7 +303,7 @@ func Gigafin() *Card {
 func MurlocTinyfin() *Card {
 	return &Card{
 		Mana:      0,
-		Name:      "Murloc Tinyfin",
+		Name:      "鱼人宝宝",
 		Attack:    1,
 		MaxHealth: 1,
 		Rarity:    Common,
@@ -313,10 +316,10 @@ func MurlocTinyfin() *Card {
 func Murmy() *Card {
 	return &Card{
 		Mana:      1,
-		Name:      "Murmy",
+		Name:      "鱼人木乃伊",
 		Attack:    1,
 		MaxHealth: 1,
-		Text:      "<b>Reborn</b>",
+		Text:      "<b>复生</b>",
 		Rarity:    Common,
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/a/ad/Murmy_full.jpg",
 		Tribe:     Murloc,
@@ -327,10 +330,10 @@ func Murmy() *Card {
 func BluegillWarrior() *Card {
 	return &Card{
 		Mana:      2,
-		Name:      "Bluegill Warrior",
+		Name:      "蓝腮战士",
 		Attack:    2,
 		MaxHealth: 1,
-		Text:      "Charge",
+		Text:      "<b>冲锋</b>",
 		Rarity:    Basic,
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/f/f2/Bluegill_Warrior_full.jpg",
 		Tribe:     Murloc,
@@ -341,10 +344,10 @@ func BluegillWarrior() *Card {
 func Crabrider() *Card {
 	return &Card{
 		Mana:      2,
-		Name:      "Crabrider",
+		Name:      "螃蟹骑士",
 		Attack:    1,
 		MaxHealth: 4,
-		Text:      "<b>Rush. Windfury.</b>",
+		Text:      "<b>突袭，风怒。</b>",
 		Rarity:    Common,
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/5/59/Crabrider_full.jpg",
 		Tribe:     Murloc,
@@ -355,11 +358,11 @@ func Crabrider() *Card {
 func LushwaterScout() *Card {
 	return &Card{
 		Mana:      2,
-		Name:      "Lushwater Scout",
+		Name:      "甜水鱼人斥候",
 		Attack:    1,
 		MaxHealth: 3,
 		Rarity:    Common,
-		Text:      "After you summon a Murloc, give it +1 Attack and <b>Rush.</b>",
+		Text:      "在你召唤一个鱼人后，使其获得+1攻击力和<b>突袭</b>。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/6/6b/Lushwater_Scout_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Neutral},
@@ -383,11 +386,11 @@ func LushwaterScout() *Card {
 func MurlocWarleader() *Card {
 	return &Card{
 		Mana:      3,
-		Name:      "Murloc Warleader",
+		Name:      "鱼人领军",
 		Attack:    3,
 		MaxHealth: 3,
 		Rarity:    Epic,
-		Text:      "Your other Murlocs have +2 Attack.",
+		Text:      "你的其他鱼人拥有+2攻击力。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/8/82/Murloc_Warleader_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Neutral},
@@ -418,11 +421,11 @@ func MurlocWarleader() *Card {
 func TwinfinFinTwin() *Card {
 	return &Card{
 		Mana:      3,
-		Name:      "Twin-fin Fin Twin",
+		Name:      "并鳍奇兵",
 		Attack:    2,
 		MaxHealth: 1,
 		Rarity:    Rare,
-		Text:      "<b>Rush. Battlecry:</b> Summon a copy of this.",
+		Text:      "<b>突袭。战吼：</b>召唤一个本随从的复制。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/4/4d/Twin-fin_Fin_Twin_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Neutral, Rush},
@@ -441,11 +444,11 @@ func TwinfinFinTwin() *Card {
 func OldMurkEye() *Card {
 	return &Card{
 		Mana:      4,
-		Name:      "Old Murk-Eye",
+		Name:      "老瞎眼",
 		Attack:    2,
 		MaxHealth: 4,
 		Rarity:    Legendary,
-		Text:      "<b>Charge.</b> Has +1 Attack for each other Murloc on the battlefield.",
+		Text:      "<b>冲锋</b>，在战场上每有一个其他鱼人便拥有+1攻击力。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/6/62/Murloc_Raid_art.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Neutral, Charge},
@@ -475,11 +478,11 @@ func OldMurkEye() *Card {
 func GorlocRavager() *Card {
 	return &Card{
 		Mana:      5,
-		Name:      "Gorloc Ravager",
+		Name:      "鳄鱼人掠夺者",
 		Attack:    4,
 		MaxHealth: 3,
 		Rarity:    Common,
-		Text:      "<b>Battlecry:</b> Draw 3 Murlocs.",
+		Text:      "<b>战吼：</b>抽三张鱼人牌。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/a/a6/Gorloc_Ravager_full.jpg",
 		Tribe:     Murloc,
 		Tags:      []string{Minion, Neutral},
@@ -505,9 +508,9 @@ func GorlocRavager() *Card {
 func Redemption() *Card {
 	return &Card{
 		Mana:   1,
-		Name:   "Redemption",
+		Name:   "救赎",
 		Rarity: Common,
-		Text:   "Secret: When a friendly minion dies, return it to life with 1 Health.",
+		Text:   "<b>奥秘：</b>当一个友方随从死亡时，使其回到战场，并具有1点生命值。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/a/a8/Redemption_full.jpg",
 		Tags:   []string{Spell, Paladin, Secret},
 		Events: map[string]Event{
@@ -525,9 +528,9 @@ func Redemption() *Card {
 func Equality() *Card {
 	return &Card{
 		Mana:   2,
-		Name:   "Equality",
+		Name:   "生而平等",
 		Rarity: Rare,
-		Text:   "Change the Health of ALL minions to 1.",
+		Text:   "将所有随从的生命值变为1。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/b/bf/Equality_full.jpg",
 		Tags:   []string{Spell, Paladin},
 		Events: map[string]Event{
@@ -548,11 +551,11 @@ func Equality() *Card {
 func AldorPeacekeeper() *Card {
 	return &Card{
 		Mana:      3,
-		Name:      "Aldor Peacekeeper",
+		Name:      "奥尔多卫士",
 		Attack:    3,
 		MaxHealth: 3,
 		Rarity:    Rare,
-		Text:      "Battlecry: Change an enemy minion's Attack to 1.",
+		Text:      "<b>战吼：</b>使一个敌方随从的攻击力变为1。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/0/0a/Aldor_Peacekeeper_full.jpg",
 		Tags:      []string{Minion, Paladin},
 		Targets: func(b *Board) []string {
@@ -577,9 +580,9 @@ func AldorPeacekeeper() *Card {
 func Consecration() *Card {
 	return &Card{
 		Mana:   4,
-		Name:   "Consecration",
+		Name:   "奉献",
 		Rarity: Basic,
-		Text:   "Deal 2 damage to all enemies.",
+		Text:   "对所有敌人造成2点伤害。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/b/b4/Consecration_full.jpg",
 		Tags:   []string{Spell, Paladin},
 		Events: map[string]Event{
@@ -602,9 +605,9 @@ func Consecration() *Card {
 func DivineFavor() *Card {
 	return &Card{
 		Mana:   3,
-		Name:   "Divine Favor",
+		Name:   "神恩术",
 		Rarity: Rare,
-		Text:   "Draw cards until you have as many in hand as your opponent.",
+		Text:   "抽若干数量的牌，直到你的手牌数量等同于你对手的手牌数量。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/1/19/Divine_Favor_full.jpg",
 		Tags:   []string{Spell, Paladin},
 		Events: map[string]Event{
@@ -622,11 +625,11 @@ func DivineFavor() *Card {
 func SwordOfJustice() *Card {
 	return &Card{
 		Mana:      3,
-		Name:      "Sword of Justice",
+		Name:      "公正之剑",
 		Rarity:    Epic,
 		Attack:    1,
 		MaxHealth: 5,
-		Text:      "After you summon a minion, give it +1/+1 and this loses 1 Durability.",
+		Text:      "每当你召唤一个随从，使它获得+1/+1，这把武器失去1点耐久度。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/4/4e/Sword_of_Justice_full.jpg",
 		Tags:      []string{Weapon, Paladin},
 		Events: map[string]Event{
@@ -649,9 +652,9 @@ func SwordOfJustice() *Card {
 func BlessingOfKings() *Card {
 	return &Card{
 		Mana:   4,
-		Name:   "Blessing of Kings",
+		Name:   "王者祝福",
 		Rarity: Basic,
-		Text:   "Give a minion +4/+4. (+4 Attack/+4 Health)",
+		Text:   "使一个随从获得+4/+4。（+4攻击力/+4生命值）",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/7/72/Blessing_of_Kings_full.jpg",
 		Tags:   []string{Spell, Paladin},
 		Targets: func(b *Board) []string {
@@ -677,11 +680,11 @@ func BlessingOfKings() *Card {
 func KeeperOfUldaman() *Card {
 	return &Card{
 		Mana:      4,
-		Name:      "Keeper of Uldaman",
+		Name:      "奥达曼守护者",
 		Rarity:    Common,
 		Attack:    3,
 		MaxHealth: 3,
-		Text:      "<b>Battlecry:</b> Set a minion's Attack and Health to 3.",
+		Text:      "<b>战吼：</b>将一个随从的攻击力和生命值变为3。",
 		Image:     "https://i.pinimg.com/originals/b9/84/2a/b9842add813d82af043d15303ecca5d9.png",
 		Tags:      []string{Minion, Paladin},
 		Targets: func(b *Board) []string {
@@ -707,9 +710,9 @@ func KeeperOfUldaman() *Card {
 func StandAgainstDarkness() *Card {
 	return &Card{
 		Mana:   4,
-		Name:   "Stand Against Darkness",
+		Name:   "惩黑除恶",
 		Rarity: Common,
-		Text:   "Summon five 1/1 Silver Hand Recruits.",
+		Text:   "召唤五个1/1的白银之手新兵。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/f/ff/Stand_Against_Darkness_full.jpg",
 		Tags:   []string{Spell, Paladin},
 		Events: map[string]Event{
@@ -748,9 +751,9 @@ func TruesilverChampion() *Card {
 func LayOnHands() *Card {
 	return &Card{
 		Mana:   8,
-		Name:   "Lay on Hands",
+		Name:   "圣疗术",
 		Rarity: Epic,
-		Text:   "Restore 8 Health. Draw 3 cards.",
+		Text:   "恢复8点生命值，抽3张牌。",
 		Image:  "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/b/bf/Lay_on_Hands_full.jpg",
 		Tags:   []string{Spell, Paladin},
 		Targets: func(b *Board) []string {
@@ -775,7 +778,7 @@ func LayOnHands() *Card {
 func Ashbringer() *Card {
 	return &Card{
 		Mana:      5,
-		Name:      "Ashbringer",
+		Name:      "灰烬使者",
 		Rarity:    Epic,
 		Attack:    5,
 		MaxHealth: 3,
@@ -787,11 +790,11 @@ func Ashbringer() *Card {
 func TirionFordring() *Card {
 	return &Card{
 		Mana:      8,
-		Name:      "Tirion Fordring",
+		Name:      "提里奥·弗丁",
 		Attack:    6,
 		MaxHealth: 6,
 		Rarity:    Legendary,
-		Text:      "<b>Divine Shield, Taunt Deathrattle:</b> Equip a 5/3 Ashbringer.",
+		Text:      "<b>圣盾，嘲讽，亡语：</b>装备一把5/3的灰烬使者。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/6/63/Tirion_Fordring_full.jpg",
 		Tags:      []string{Minion, Paladin, DivineShield, Taunt, Deathrattle},
 		Events: map[string]Event{
@@ -809,12 +812,12 @@ func BloodmageThalnos() *Card {
 	return &Card{
 		Id:          uuid.NewString(),
 		Mana:        2,
-		Name:        "Bloodmage Thalnos",
+		Name:        "血法师萨尔诺斯",
 		SpellDamage: 1,
 		Attack:      1,
 		MaxHealth:   1,
 		Rarity:      Legendary,
-		Text:        "<b>Spell Damage +1. Deathrattle:</b> Draw a card.",
+		Text:        "<b>法术伤害+1，亡语：</b>抽一张牌。",
 		Image:       "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/e/ed/Bloodmage_Thalnos_full.jpg",
 		Tags:        []string{Minion, Neutral, Spellpower, Deathrattle},
 		Events: map[string]Event{
@@ -829,11 +832,11 @@ func BloodmageThalnos() *Card {
 func LootHoarder() *Card {
 	return &Card{
 		Mana:      2,
-		Name:      "LootHoarder",
+		Name:      "战利品贮藏者",
 		Attack:    2,
 		MaxHealth: 1,
 		Rarity:    Common,
-		Text:      "<b>Deathrattle:</b> Draw a card.",
+		Text:      "<b>亡语：</b>抽一张牌。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/d/d6/Loot_Hoarder_full.jpg",
 		Tags:      []string{Minion, Neutral, Deathrattle},
 		Events: map[string]Event{
@@ -848,11 +851,11 @@ func LootHoarder() *Card {
 func SpawnOfNZoth() *Card {
 	return &Card{
 		Mana:      3,
-		Name:      "Spawn of N'Zoth",
+		Name:      "恩佐斯的子嗣",
 		Attack:    2,
 		MaxHealth: 2,
 		Rarity:    Common,
-		Text:      "<b>Deathrattle:</b> Give your minions +1/+1.",
+		Text:      "<b>亡语：</b>使你的所有随从获得+1/+1。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/7/73/Spawn_of_N%27Zoth_full.jpg",
 		Tags:      []string{Minion, Neutral, Deathrattle},
 		Events: map[string]Event{
@@ -874,10 +877,11 @@ func SpawnOfNZoth() *Card {
 func PutridSlime() *Card {
 	return &Card{
 		Mana:      1,
+		Name:      "腐臭软泥",
 		Attack:    1,
 		MaxHealth: 2,
 		Rarity:    Basic,
-		Text:      "<b>Taunt</b>",
+		Text:      "<b>嘲讽</b>",
 		Image:     "https://gamepedia.cursecdn.com/hearthstone_gamepedia/thumb/f/fe/Slime_full.png/800px-Slime_full.png",
 		Tags:      []string{Minion, Neutral, Taunt},
 	}
@@ -886,11 +890,11 @@ func PutridSlime() *Card {
 func SludgeBelcher() *Card {
 	return &Card{
 		Mana:      5,
-		Name:      "Sludge Belcher",
+		Name:      "淤泥喷射者",
 		Attack:    3,
 		MaxHealth: 5,
 		Rarity:    Common,
-		Text:      "<b>Taunt Deathrattle:</b> Summon a 1/2 Slime with Taunt.",
+		Text:      "<b>嘲讽，亡语：</b>召唤一个1/2并具有嘲讽的泥浆怪。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/0/01/Sludge_Belcher_full.jpg",
 		Tags:      []string{Minion, Neutral, Taunt, Deathrattle},
 		Events: map[string]Event{
@@ -906,11 +910,11 @@ func SludgeBelcher() *Card {
 func EmperorThaurissan() *Card {
 	return &Card{
 		Mana:      6,
-		Name:      "Emperor Thaurissan",
+		Name:      "索瑞森大帝",
 		Attack:    5,
 		MaxHealth: 5,
 		Rarity:    Legendary,
-		Text:      "At the end of your turn, reduce the Cost of cards in your hand by (1).",
+		Text:      "在你的回合结束时，你所有手牌的法力值消耗减少（1）点。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/5/5a/Emperor_Thaurissan_full.jpg",
 		Tags:      []string{Minion, Neutral, EndOfTurn},
 		Events: map[string]Event{
@@ -929,11 +933,11 @@ func EmperorThaurissan() *Card {
 func SylvanasWindrunner() *Card {
 	return &Card{
 		Mana:      6,
-		Name:      "Sylvanas Windrunner",
+		Name:      "希尔瓦娜斯·风行者",
 		Attack:    5,
 		MaxHealth: 5,
 		Rarity:    Legendary,
-		Text:      "<b>Deathrattle:</b> Take control of a random enemy minion.",
+		Text:      "<b>亡语：</b>随机获得一个敌方随从的控制权。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/f/f9/Sylvanas_Windrunner_full.jpg",
 		Tags:      []string{Minion, Neutral, Deathrattle},
 		Events: map[string]Event{
@@ -958,11 +962,11 @@ func SylvanasWindrunner() *Card {
 func NZothTheCorruptor() *Card {
 	return &Card{
 		Mana:      10,
-		Name:      "N'Zoth, the Corruptor",
+		Name:      "恩佐斯",
 		Attack:    5,
 		MaxHealth: 7,
 		Rarity:    Legendary,
-		Text:      "<b>Battlecry:</b> Summon your <b>Deathrattle</b> minions that died this game.",
+		Text:      "<b>战吼：</b>召唤所有你在本局对战中死亡的，并具有亡语的随从。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/1/13/N%27Zoth%2C_the_Corruptor_full.jpg",
 		Tags:      []string{Minion, Neutral, Battlecry},
 		Events: map[string]Event{
@@ -977,6 +981,29 @@ func NZothTheCorruptor() *Card {
 					ressptr.Enchantments = nil
 					ctx.Board.SummonMinion(ctx.This, ressptr)
 				}
+				return nil
+			},
+		},
+	}
+}
+
+func RagnarosTheFirelord() *Card {
+	return &Card{
+		Mana:      8,
+		Name:      "炎魔之王拉格纳罗斯",
+		Attack:    8,
+		MaxHealth: 8,
+		Rarity:    Legendary,
+		Text:      "<b>无法攻击。在你的回合结束时，随机对一个敌人造成8点伤害。",
+		Image:     "/imgs/炎魔之王拉格纳罗斯.jpg",
+		Tags:      []string{Minion, Neutral, Element, CannotAttack, EndOfTurn},
+		Events: map[string]Event{
+			EventEndOfTurn: func(ctx *EventContext) error {
+				player := ctx.Board.getOpponent(ctx.This.Player)
+				targes := append(player.Minions, player.Hero)
+
+				targeIndex := rand.Intn(len(targes))
+				ctx.Board.DealDamage(ctx.This, targes[targeIndex], 8)
 				return nil
 			},
 		},

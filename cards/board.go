@@ -450,6 +450,8 @@ func (*Board) RefreshAttack(c *Card) {
 		c.AttacksLeft = 3
 	} else if c.HasTag(Windfury) {
 		c.AttacksLeft = 2
+	} else if c.HasTag(CannotAttack) {
+		c.AttacksLeft = 0
 	} else {
 		c.AttacksLeft = 1
 	}

@@ -1,10 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import {
-      getCardAttack,
-      getCost,
-      getTags
-  } from "../interfaces/cards";
+  import { getCardAttack, getCost, getTags } from "../interfaces/cards";
 
   export let card: import("../interfaces/cards").Card;
   export let width: number;
@@ -12,10 +8,10 @@
   let dispatch = createEventDispatcher();
 
   let raritymap = new Map();
-  raritymap.set("common", "#EFEBE0");
-  raritymap.set("rare", "#055C9D");
-  raritymap.set("epic", "#8155BA");
-  raritymap.set("legendary", "#FFA500");
+  raritymap.set("普通", "#EFEBE0");
+  raritymap.set("稀有", "#055C9D");
+  raritymap.set("史诗", "#8155BA");
+  raritymap.set("传说", "#FFA500");
 
   let isBleeding = getTags(card).some((t) => t === "bloodPayment");
 
@@ -38,25 +34,25 @@
 
   function cardBGColor() {
     switch (card.tags[1]) {
-      case "neutral":
+      case "中立":
         return "linear-gradient(to bottom, #6C5E51, #897767)";
-      case "druid":
+      case "德鲁伊":
         return "linear-gradient(to bottom, #5C3623, #814C31)";
-      case "hunter":
+      case "猎人":
         return "linear-gradient(to bottom, #415E25, #5A8333)";
-      case "mage":
+      case "法师":
         return "linear-gradient(to bottom, #59648F, #737EA8)";
-      case "paladin":
+      case "圣骑士":
         return "linear-gradient(to bottom, #9C7D4F, #7A623E)";
-      case "priest":
+      case "牧师":
         return "linear-gradient(to bottom, #A5A7AD, #8A8D95)";
-      case "rogue":
+      case "潜行者":
         return "linear-gradient(to bottom, #39393E, #515159)";
-      case "shaman":
+      case "萨满祭司":
         return "linear-gradient(to bottom, #343F62, #465483)";
-      case "warlock":
+      case "术士":
         return "linear-gradient(to bottom, #4E3058, #6B4279)";
-      case "warrior":
+      case "战士":
         return "linear-gradient(to bottom, #832B20, #AC382A)";
     }
   }
@@ -86,13 +82,13 @@
   on:mouseenter={() => dispatch("mouseenter")}
   on:mouseleave={() => dispatch("mouseleave")}
 >
-<img class={card.type} src={card.image} alt="card portrait" />
-<div class="mana" style:font-size={width * 0.174 + "px"}>{getCost(card)}</div>
+  <img class={card.type} src={card.image} alt="card portrait" />
+  <div class="mana" style:font-size={width * 0.174 + "px"}>{getCost(card)}</div>
   <div class="name" style:font-size={width * 0.092 + "px"}>{card.name}</div>
   <div class="text" style:font-size={width * 0.08 + "px"}>
     {@html card.text}
   </div>
-  {#if card.type !== "spell" && card.type !== "heropower"}
+  {#if card.type !== "法术" && card.type !== "英雄技能"}
     <div
       class="attack"
       style:color={attackColor()}
@@ -104,7 +100,7 @@
       class="health"
       style:color={healthColor()}
       style:font-size={width * 0.16 + "px"}
-      style:background-image={card.type === "weapon"
+      style:background-image={card.type === "武器"
         ? "linear-gradient(#283336, #362b28)"
         : "linear-gradient(#e7625f, #c85250)"}
     >
@@ -112,7 +108,7 @@
     </div>
   {/if}
   <div
-    style:display={card.rarity === "basic" ? "none" : "block"}
+    style:display={card.rarity === "基础" ? "none" : "block"}
     class="rarity"
     style:background-color={raritymap.get(card.rarity)}
   />
@@ -132,7 +128,10 @@
     margin: 5px;
     color: #f4f2eb;
     text-align: center;
-    text-shadow: -1px -1px 1px black, 1px -1px 1px black, -1px 1px 1px black,
+    text-shadow:
+      -1px -1px 1px black,
+      1px -1px 1px black,
+      -1px 1px 1px black,
       1px 1px 1px black;
     border-style: solid;
     border-width: 1px;

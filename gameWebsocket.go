@@ -111,50 +111,53 @@ func Connect(ctx *gin.Context) {
 	}
 	p.UpdateBoardChan <- true
 	log.Println("Player", p.id+1, "connected")
-gameloop:
-	for {
-		select {
-		case r := <-p.ResultsChan:
-			if r == int(p.id) {
-				p.Conn.WriteJSON(map[string]any{
-					"type": "result",
-					"data": "You win!",
-				})
-			} else {
-				p.Conn.WriteJSON(map[string]any{
-					"type": "result",
-					"data": "You lose",
-				})
-			}
-			match.DisconnectPlayer(p.id)
-			break gameloop
-		case <-p.UpdateBoardChan:
-			match.SendBoard(p.id)
-		}
-	actionloop:
+	
+	func() {
 		for {
-			if match.board.PlayerTurn == p.id {
-				if w := <-b.WaitingActionChan; w != -1 {
-					p.ResultsChan <- w
-					match.players[1-w].ResultsChan <- 1 - w
-					break actionloop
+			select {
+			case r := <-p.ResultsChan:
+				if r == int(p.id) {
+					p.Conn.WriteJSON(map[string]any{
+						"type": "result",
+						"data": "You win!",
+					})
+				} else {
+					p.Conn.WriteJSON(map[string]any{
+						"type": "result",
+						"data": "You lose",
+					})
 				}
-				mt, msg, err := conn.ReadMessage()
-				if err != nil || mt != websocket.TextMessage {
-					break gameloop
-				}
-				act := &cards.Action{}
-				json.Unmarshal(msg, act)
-				match.board.ActionChan <- act
-				err = <-b.ActionEndChan
-				if err != nil {
-					match.SendError(p.id, err)
-				}
-				match.UpdatePlayersBoard()
+				match.DisconnectPlayer(p.id)
+				return
+			case <-p.UpdateBoardChan:
+				match.SendBoard(p.id)
 			}
-			break actionloop
+
+			for {
+				if match.board.PlayerTurn == p.id {
+					if w := <-b.WaitingActionChan; w != -1 {
+						p.ResultsChan <- w
+						match.players[1-w].ResultsChan <- 1 - w
+						break
+					}
+					mt, msg, err := conn.ReadMessage()
+					if err != nil || mt != websocket.TextMessage {
+						return
+					}
+					act := &cards.Action{}
+					json.Unmarshal(msg, act)
+					match.board.ActionChan <- act
+					err = <-b.ActionEndChan
+					if err != nil {
+						match.SendError(p.id, err)
+					}
+					match.UpdatePlayersBoard()
+				}
+				break
+			}
 		}
-	}
+	}()
+
 	match.DisconnectPlayer(p.id)
 	b.WaitingActionChan <- -1
 	match.UpdatePlayersBoard()
