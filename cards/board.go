@@ -3,6 +3,7 @@ package cards
 import (
 	"cards/utils"
 	"fmt"
+	"math/rand"
 
 	"github.com/google/uuid"
 )
@@ -16,18 +17,21 @@ type HistoricEvent struct {
 }
 
 type Board struct {
-	PlayerTurn        byte // 0, 1
+	PlayerTurn        bool // 0, 1
 	TurnCount         int
-	Players           [2]*Player
+	Players           map[bool]*Player
 	History           []*HistoricEvent
 	LastEvents        []*HistoricEvent
 	ActionChan        chan *Action
-	WaitingActionChan chan int
+	WaitingActionChan chan *bool
 	ActionEndChan     chan error
 }
 
 func (b *Board) Start() {
-	b.PlayerTurn = 1 // So on next turn, it's player 1's turn
+	b.PlayerTurn = false // So on next turn, it's player 1's turn
+	if rand.Intn(2) == 1 {
+		b.PlayerTurn = true
+	}
 	for _, p := range b.Players {
 		setupCards(p)
 		b.ShuffleDeck(p)
@@ -39,35 +43,35 @@ func (b *Board) Start() {
 	}
 	coin := TheCoin()
 	coin.Id = uuid.NewString()
-	coin.Player = b.Players[1]
-	b.Players[1].Hand = append(b.Players[1].Hand, coin)
+	coin.Player = b.Players[b.PlayerTurn]
+	b.Players[b.PlayerTurn].Hand = append(b.Players[b.PlayerTurn].Hand, coin)
 	b.NextTurn()
 
-gameLoop:
-	for {
-		p := b.Players[b.PlayerTurn]
-		p.UsedHeroPower = false
-	turnLoop:
+	func() {
 		for {
-			b.WaitingActionChan <- -1
-			a := <-b.ActionChan
-			if !IsActionValid(a) {
-				b.ActionEndChan <- fmt.Errorf("invalid action: %v", a)
-				continue turnLoop
-			}
-			b.LastEvents = []*HistoricEvent{}
-			actionEnd := b.DoAction(a, p)
-			b.TriggerEventsFrom(b.AllActiveCards(), b.Context(p.Hero, p.Hero), EventEndOfAction)
-			b.ActionEndChan <- actionEnd
-			if p, ok := b.CheckWin(); ok {
-				b.WaitingActionChan <- int(p)
-				break gameLoop
-			}
-			if a.Type == EndTurn {
-				break turnLoop
+			p := b.Players[b.PlayerTurn]
+			p.UsedHeroPower = false
+			for {
+				b.WaitingActionChan <- nil
+				a := <-b.ActionChan
+				if !IsActionValid(a) {
+					b.ActionEndChan <- fmt.Errorf("invalid action: %v", a)
+					continue
+				}
+				b.LastEvents = []*HistoricEvent{}
+				actionEnd := b.DoAction(a, p)
+				b.TriggerEventsFrom(b.AllActiveCards(), b.Context(p.Hero, p.Hero), EventEndOfAction)
+				b.ActionEndChan <- actionEnd
+				if p, ok := b.CheckWin(); ok {
+					b.WaitingActionChan <- &p
+					return
+				}
+				if a.Type == EndTurn {
+					break
+				}
 			}
 		}
-	}
+	}()
 }
 
 func (b *Board) AddHistoric(type_ string, source, target *Card) {
@@ -295,13 +299,13 @@ func (b *Board) DestroyMinion(source, minion *Card) {
 	}
 }
 
-func (b *Board) CheckWin() (byte, bool) {
+func (b *Board) CheckWin() (bool, bool) {
 	for i, p := range b.Players {
 		if p.Hero.Health <= 0 {
-			return byte(1 - i), true
+			return !i, true
 		}
 	}
-	return 0, false
+	return true, false
 }
 
 func (b *Board) UseHeroPower(hp, target *Card) error {
@@ -418,7 +422,7 @@ func (b *Board) StartTurn(p *Player) {
 }
 
 func (b *Board) NextTurn() {
-	b.PlayerTurn = 1 - b.PlayerTurn
+	b.PlayerTurn = !b.PlayerTurn
 	b.TurnCount++
 	p := b.Players[b.PlayerTurn]
 	if p.MaxMana < p.MaxMaxMana {
@@ -634,10 +638,10 @@ func (b *Board) AllCharacters() []*Card {
 }
 
 func (b *Board) getOpponent(p *Player) *Player {
-	if p == b.Players[0] {
-		return b.Players[1]
+	if p == b.Players[true] {
+		return b.Players[false]
 	}
-	return b.Players[0]
+	return b.Players[true]
 }
 
 func (b *Board) cardIsActiveCard(card *Card) bool {

@@ -685,7 +685,7 @@ func KeeperOfUldaman() *Card {
 		Attack:    3,
 		MaxHealth: 3,
 		Text:      "<b>战吼：</b>将一个随从的攻击力和生命值变为3。",
-		Image:     "https://i.pinimg.com/originals/b9/84/2a/b9842add813d82af043d15303ecca5d9.png",
+		Image:     "https://huiji-public.huijistatic.com/hearthstone/uploads/3/3d/Art_LOE_017.png",
 		Tags:      []string{Minion, Paladin},
 		Targets: func(b *Board) []string {
 			targets := []string{}
@@ -730,11 +730,11 @@ func StandAgainstDarkness() *Card {
 func TruesilverChampion() *Card {
 	return &Card{
 		Mana:      4,
-		Name:      "Truesilver Champion",
+		Name:      "真银圣剑",
 		Rarity:    Basic,
 		Attack:    4,
 		MaxHealth: 2,
-		Text:      "Whenever your hero attacks, restore 3 Health to it.",
+		Text:      "每当你的英雄进攻，便为其恢复3点生命值。",
 		Image:     "https://static.wikia.nocookie.net/hearthstone_gamepedia/images/9/99/Truesilver_Champion_full.jpg",
 		Tags:      []string{Weapon, Paladin},
 		Events: map[string]Event{
@@ -1008,9 +1008,4 @@ func RagnarosTheFirelord() *Card {
 			},
 		},
 	}
-}
-
-var CardCollection = []func() *Card{
-	TheCoin,
-	ElvenArcher,
 }

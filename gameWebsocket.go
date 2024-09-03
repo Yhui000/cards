@@ -11,14 +11,14 @@ import (
 )
 
 type Player struct {
-	id              byte
+	id              bool
 	Conn            *websocket.Conn
 	UpdateBoardChan chan bool
-	ResultsChan     chan int
+	ResultsChan     chan bool
 }
 
 type Match struct {
-	players [2]*Player
+	players map[bool]*Player
 	board   *cards.Board
 }
 
@@ -26,10 +26,10 @@ func (m *Match) NewPlayer(conn *websocket.Conn) *Player {
 	for i, p := range m.players {
 		if p == nil {
 			p = &Player{
-				id:              byte(i),
+				id:              i,
 				Conn:            conn,
 				UpdateBoardChan: make(chan bool, 1),
-				ResultsChan:     make(chan int, 1),
+				ResultsChan:     make(chan bool, 1),
 			}
 			m.players[i] = p
 			return p
@@ -38,7 +38,7 @@ func (m *Match) NewPlayer(conn *websocket.Conn) *Player {
 	return nil
 }
 
-func (m *Match) DisconnectPlayer(id byte) {
+func (m *Match) DisconnectPlayer(id bool) {
 	if m.players[id] != nil && m.players[id].Conn != nil {
 		m.players[id].Conn.Close()
 	}
@@ -56,7 +56,7 @@ func (m *Match) BroadcastBoard() {
 	}
 }
 
-func (m *Match) SendBoard(id byte) {
+func (m *Match) SendBoard(id bool) {
 	p := m.players[id]
 	if p != nil {
 		p.Conn.WriteJSON(map[string]any{
@@ -66,7 +66,7 @@ func (m *Match) SendBoard(id byte) {
 	}
 }
 
-func (m *Match) SendError(id byte, err error) {
+func (m *Match) SendError(id bool, err error) {
 	p := m.players[id]
 	log.Println("sendind error")
 	if p != nil {
@@ -85,14 +85,15 @@ func (m *Match) UpdatePlayersBoard() {
 	}
 }
 
-var match Match = Match{board: b}
+var match Match = Match{board: b, players: map[bool]*Player{true: nil, false: nil}}
 
 func Connect(ctx *gin.Context) {
 	// TODO: rework this to find a match in a list of matches (only when the project be about to be finished)
 	if match.board == nil {
 		match.board = b
 	}
-	if match.players[0] != nil && match.players[1] != nil {
+
+	if match.players[true] != nil && match.players[false] != nil {
 		ctx.Status(400)
 		return
 	}
@@ -104,19 +105,21 @@ func Connect(ctx *gin.Context) {
 		return
 	}
 	defer conn.Close()
+
 	p := match.NewPlayer(conn)
 	if p == nil {
 		ctx.Status(400)
 		return
 	}
+
 	p.UpdateBoardChan <- true
-	log.Println("Player", p.id+1, "connected")
-	
+	log.Println("Player", p.id, "connected")
+
 	func() {
 		for {
 			select {
 			case r := <-p.ResultsChan:
-				if r == int(p.id) {
+				if r == p.id {
 					p.Conn.WriteJSON(map[string]any{
 						"type": "result",
 						"data": "You win!",
@@ -135,9 +138,9 @@ func Connect(ctx *gin.Context) {
 
 			for {
 				if match.board.PlayerTurn == p.id {
-					if w := <-b.WaitingActionChan; w != -1 {
-						p.ResultsChan <- w
-						match.players[1-w].ResultsChan <- 1 - w
+					if w := <-b.WaitingActionChan; w != nil {
+						p.ResultsChan <- *w
+						match.players[!*w].ResultsChan <- !*w
 						break
 					}
 					mt, msg, err := conn.ReadMessage()
@@ -159,9 +162,9 @@ func Connect(ctx *gin.Context) {
 	}()
 
 	match.DisconnectPlayer(p.id)
-	b.WaitingActionChan <- -1
+	b.WaitingActionChan <- nil
 	match.UpdatePlayersBoard()
-	log.Println("Player", p.id+1, "disconnected")
+	log.Println("Player", p.id, "disconnected")
 }
 
 func allowAnyOrigin(r *http.Request) bool {

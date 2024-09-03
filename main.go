@@ -11,11 +11,11 @@ var b *cards.Board
 func main() {
 	// ? Game Setup
 	b = &cards.Board{
-		PlayerTurn:        0,
+		PlayerTurn:        true,
 		TurnCount:         0,
-		Players:           [2]*cards.Player{cards.PaladinControlZoth(), cards.WarlockMurloc()},
+		Players:           map[bool]*cards.Player{true: cards.PaladinControlZoth(), false: cards.WarlockMurloc()},
 		ActionChan:        make(chan *cards.Action),
-		WaitingActionChan: make(chan int, 1),
+		WaitingActionChan: make(chan *bool, 1),
 		ActionEndChan:     make(chan error, 1),
 	}
 

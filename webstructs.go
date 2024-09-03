@@ -144,8 +144,8 @@ func TranslateCards(b *cards.Board, cs []*cards.Card) []*Card {
 	return translatedCards
 }
 
-func TranslateBoard(b *cards.Board, playerId byte) *Board {
-	enemyId := 1 - playerId
+func TranslateBoard(b *cards.Board, playerId bool) *Board {
+	enemyId := !playerId
 	return &Board{
 		MyTurn:     playerId == b.PlayerTurn,
 		TurnCount:  b.TurnCount,
